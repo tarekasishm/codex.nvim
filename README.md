@@ -7,6 +7,10 @@ and files) straight into your Codex session.
 Inspired by [claudecode.nvim](https://github.com/coder/claudecode.nvim), adapted
 to how Codex actually integrates with editors.
 
+![codex.nvim chat mode: :CodexAsk streams a reply into a transcript split, with live token usage in the winbar](assets/demo.gif)
+
+<sub>Chat mode — `:CodexAsk` streams the reply into a transcript split, with live token usage in the winbar. Regenerate with `vhs assets/demo.tape`.</sub>
+
 > **Two ways to use it:**
 >
 > - **Terminal mode (Phase 1)** — runs the interactive `codex` TUI in a split and
