@@ -46,11 +46,11 @@ dependencies (snacks.nvim optional).
 ## Installation
 
 [lazy.nvim](https://github.com/folke/lazy.nvim) — a full spec with keymaps for
-both modes. Replace `OWNER/codex.nvim` with the repository path.
+both modes.
 
 ```lua
 {
-  "OWNER/codex.nvim",
+  "tarekasishm/codex.nvim",
   dependencies = { "folke/snacks.nvim" }, -- optional, for the snacks terminal provider
   opts = {
     terminal = { split_side = "right", split_width_percentage = 0.40 },
