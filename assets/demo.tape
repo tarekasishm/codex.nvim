@@ -1,6 +1,6 @@
-# VHS tape for the codex.nvim chat-mode demo.
+# VHS tape for the codex.nvim terminal-mode demo.
 # Regenerate with:  vhs assets/demo.tape   (needs: vhs, ttyd, ffmpeg, codex login)
-# Records a real, live Codex turn — it makes a billable API call.
+# Terminal mode only — it does NOT submit a prompt, so no billable API call.
 
 Output assets/demo.gif
 
@@ -19,21 +19,30 @@ Hide
 Type "cd /Users/thm/Documents/codex.nvim && clear"
 Enter
 Sleep 400ms
-Type "nvim -u assets/demo-init.lua lua/codex/session.lua"
+Type "nvim -u assets/demo-init.lua lua/codex/context.lua"
 Enter
-Sleep 2.5s
+Sleep 2s
 Show
 
-# Open the app-server transcript (starts codex app-server lazily).
-Type ":CodexChat"
+# Toggle the interactive Codex TUI into a right-hand split.
+Type ":Codex"
 Enter
-Sleep 2.5s
+Sleep 4.5s
 
-# Ask a question — the reply streams into the transcript on the right.
-Type ":CodexAsk In one sentence, what is an embedded AI coding assistant useful for?"
+# Leave the terminal, hop back to the code window.
+Ctrl+\
+Ctrl+n
+Ctrl+w
+Type "h"
 Sleep 700ms
-Enter
-Sleep 15s
 
-# Rest on the completed answer.
-Sleep 2s
+# Select a function and send it to Codex as an @file (L..) + fenced snippet.
+Type "40G"
+Sleep 400ms
+Type "V"
+Type "10j"
+Sleep 800ms
+Type ":CodexSend"
+Sleep 500ms
+Enter
+Sleep 3.5s
