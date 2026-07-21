@@ -1,0 +1,138 @@
+*codex.txt*  Embed the OpenAI Codex CLI in Neovim
+
+==============================================================================
+CONTENTS                                                        *codex-contents*
+
+  1. Introduction ............................ |codex-introduction|
+  2. Setup ................................... |codex-setup|
+  3. Configuration ........................... |codex-config|
+  4. Commands ................................ |codex-commands|
+  5. Lua API ................................. |codex-api|
+  6. Health .................................. |codex-health|
+
+==============================================================================
+1. INTRODUCTION                                             *codex-introduction*
+
+codex.nvim runs the interactive Codex CLI (|https://github.com/openai/codex|)
+in a Neovim terminal split and lets you push editor context (selections and
+files) into the running session.
+
+Requirements:
+  - Neovim 0.10+
+  - the `codex` CLI on your PATH (`npm i -g @openai/codex`, then `codex login`)
+
+==============================================================================
+2. SETUP                                                           *codex-setup*
+
+>lua
+    require("codex").setup({})
+<
+setup() is required: it validates config and registers the |codex-commands|.
+
+==============================================================================
+3. CONFIGURATION                                                  *codex-config*
+
+Defaults: >lua
+    require("codex").setup({
+      codex_cmd = "codex",
+      args = {},
+      env = {},
+      auto_start = false,
+      terminal = {
+        provider = "auto",        -- "auto" | "native" | "snacks"
+        split_side = "right",     -- "left" | "right"
+        split_width_percentage = 0.40,
+        auto_close = false,
+        auto_insert = true,
+        hidden = true,
+      },
+      app_server = {              -- chat mode (Phase 2)
+        args = {},
+        model = nil,              -- e.g. "gpt-5-codex"
+        approval_policy = nil,    -- "untrusted"|"on-failure"|"on-request"|"never"
+        sandbox = nil,            -- "read-only"|"workspace-write"|"danger-full-access"
+        show_reasoning = false,
+      },
+      send_submit = false,
+      focus_after_send = false,
+      log_level = "info",
+    })
+<
+
+==============================================================================
+4. COMMANDS                                                     *codex-commands*
+
+:Codex [args]                                                          *:Codex*
+    Toggle the Codex terminal. Extra args are passed to `codex`
+    (e.g. `:Codex resume`, `:Codex --model gpt-5-codex`).
+
+:CodexOpen [args]                                                 *:CodexOpen*
+    Open/focus the terminal.
+
+:CodexClose                                                      *:CodexClose*
+    Hide the terminal window (the codex process keeps running).
+
+:CodexFocus                                                      *:CodexFocus*
+    Focus the terminal window.
+
+:CodexSend                                                        *:CodexSend*
+    Visual mode: send the selection as a file-referenced snippet.
+    Normal mode: send the current file as an @-mention.
+
+:CodexAdd [path]                                                   *:CodexAdd*
+    Add a file (default: current buffer) to context as an @-mention.
+
+:CodexSendText[!] {text}                                      *:CodexSendText*
+    Type {text} into the Codex prompt. With ! the text is submitted.
+
+:CodexStatus                                                    *:CodexStatus*
+    Print provider / running / open status.
+
+Chat mode (app-server):
+
+:CodexChat                                                        *:CodexChat*
+    Open the transcript window (starts `codex app-server` lazily).
+
+:CodexAsk {prompt}                                                 *:CodexAsk*
+    Send {prompt} to Codex and stream the reply into the transcript.
+
+:CodexChatSend                                                *:CodexChatSend*
+    Send the selection (or current file) plus a prompt (asked via
+    |vim.ui.input()|) to the chat.
+
+:CodexInterrupt                                              *:CodexInterrupt*
+    Interrupt the in-flight turn.
+
+:CodexStopServer                                            *:CodexStopServer*
+    Stop the app-server process.
+
+==============================================================================
+5. LUA API                                                         *codex-api*
+
+>lua
+    local codex = require("codex")
+    codex.toggle(extra_args)      -- extra_args: string[] | nil
+    codex.open(extra_args)
+    codex.focus()
+    codex.close()
+    codex.send_selection(opts)    -- opts = user-command opts
+    codex.add(path)               -- path: string | nil (current file)
+    codex.send_text(text, submit) -- submit: boolean
+    codex.status()                -- { running, open, provider }
+
+    -- chat mode (app-server)
+    codex.chat()                  -- open transcript window
+    codex.ask(text)               -- send a prompt, stream the reply
+    codex.chat_send(opts)         -- send selection/file + prompt
+    codex.interrupt()             -- interrupt the in-flight turn
+    codex.stop_server()           -- stop the app-server
+    codex.server_status()         -- { running, ready, thread, turn }
+<
+
+==============================================================================
+6. HEALTH                                                        *codex-health*
+
+Run |:checkhealth| codex to verify the Neovim version, the Codex CLI, auth,
+and the terminal provider.
+
+vim:tw=78:ts=8:ft=help:norl:
